@@ -1,4 +1,4 @@
-#include "intermediateclient.h"
+﻿#include "intermediateclient.h"
 #include "ui_intermediateclient.h"
 #include "henancommand.h"
 #include "CommonPacketObj.h"
@@ -47,10 +47,10 @@ void IntermediateClient::on_pushButton_Connect_clicked()
     if(m_WebSocket == nullptr)
     {
         m_WebSocket = new QWebSocket();
-        connect(m_WebSocket,SIGNAL(disconnected()),this,SLOT(SlotDisConnected()),Qt::AutoConnection);
-        connect(m_WebSocket,SIGNAL(binaryMessageReceived(const QByteArray &)),this,SLOT(SlotBinaryMessageReceived(const QByteArray &)),Qt::AutoConnection);
-        connect(m_WebSocket,SIGNAL(connected()),this,SLOT(SlotConnected()),Qt::AutoConnection);
-        connect(m_timer,SIGNAL(timeout()),this,SLOT(SlotSendHeartBeat()),Qt::AutoConnection);
+        connect(m_WebSocket, &QWebSocket::disconnected, this, &IntermediateClient::SlotDisConnected, Qt::AutoConnection);
+        connect(m_WebSocket, &QWebSocket::binaryMessageReceived, this, &IntermediateClient::SlotBinaryMessageReceived, Qt::AutoConnection);
+        connect(m_WebSocket, &QWebSocket::connected, this, &IntermediateClient::SlotConnected, Qt::AutoConnection);
+        connect(m_timer, &QTimer::timeout,this, &IntermediateClient::SlotSendHeartBeat, Qt::AutoConnection);
         m_WebSocket->open(QUrl(m_Url));
         //m_timer->start(10000);
     }

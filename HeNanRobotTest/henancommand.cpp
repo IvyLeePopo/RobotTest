@@ -1,4 +1,4 @@
-#include "henancommand.h"
+﻿#include "henancommand.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -476,8 +476,42 @@ QString HeNanCommand::TradeInfoCmdToHex(QString strNum)
 
     jsonObj1.insert("vehPlate", "粤A12345_0");
     jsonObj1.insert("vehType", "1");
-    jsonObj1.insert("entryStation", "鲁山");
-    jsonObj1.insert("payAmount", "23.6");
+
+    if(strNum.toInt() == 1)
+    {
+        qDebug() << __LINE__ << __FUNCTION__ << "缴费信息";
+        jsonObj1.insert("entryStation", "鲁山");
+        jsonObj1.insert("payAmount", "23.6");
+    }
+    else if(strNum.toInt() == 2)
+    {
+        qDebug() << __LINE__ << __FUNCTION__ << "车辆信息";
+        jsonObj1.insert("vehAxles", "4");
+        jsonObj1.insert("vehWeight", "14000");
+    }
+    else if(strNum.toInt() == 3)
+    {
+        qDebug() << __LINE__ << __FUNCTION__ << "货车超限";
+        jsonObj1.insert("vehAxles", "4");
+        jsonObj1.insert("vehWeight", "14000");
+        jsonObj1.insert("displayMode", "1");
+        jsonObj1.insert("vehLimit", "49000");
+        jsonObj1.insert("overLimitRate", "10.12%");
+    }
+    else if(strNum.toInt() == 4)
+    {
+        qDebug() << __LINE__ << __FUNCTION__ << "限行客车";
+        jsonObj1.insert("vehAxles", "4");
+        jsonObj1.insert("vehWeight", "14000");
+        jsonObj1.insert("displayMode", "2");
+    }
+    else if(strNum.toInt() == 5)
+    {
+        qDebug() << __LINE__ << __FUNCTION__ << "限行危险品车";
+        jsonObj1.insert("vehAxles", "4");
+        jsonObj1.insert("vehWeight", "14000");
+        jsonObj1.insert("displayMode", "3");
+    }
 
     jsonObj.insert("TradeInfoReq", jsonObj1);
     QJsonDocument document;
