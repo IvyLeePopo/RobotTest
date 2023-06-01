@@ -1,0 +1,462 @@
+#ifndef COMMANDDEF_H
+#define COMMANDDEF_H
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+#include <errno.h>
+#include <fcntl.h>
+#include <fstream>
+#include <iostream>
+#include <regex>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string>
+#include <string.h>
+#include <sys/stat.h>
+//#include <sys/time.h>
+#include <sys/types.h>
+#include <time.h>
+//#include <unistd.h>
+
+
+using namespace std;
+
+typedef unsigned char           uint8;
+typedef unsigned short          uint16;
+typedef unsigned int            uint32;
+typedef unsigned long long      uint64;
+
+enum TW_PROT_CONST
+{
+    TW_PROT_HEADER	= 0xDF,	            //协议起始符
+    TW_PROT_END		= 0xFD,	            //协议结束符
+    TW_PROT_CONVERT_CHAR		= 0x00,	//协议转译公共字符
+    TW_PROT_HEAND_CONVERT_CHAR1	= 0xDE,	//协议起始符转译字符1
+    TW_PROT_HEAND_CONVERT_CHAR2	= 0x01,	//协议起始符转译字符2
+    TW_PROT_END_CONVERT_CHAR1	= 0xFC,	//协议休止符转译字符1
+    TW_PROT_END_CONVERT_CHAR2	= 0x01	//协议休止符转译字符2
+};
+
+enum SICHUAN_PROT_CONST
+{
+    SICHUAN_PROT_HEADER	= 0xFF,         //协议起始符
+    SICHUAN_PROT_END = 0xFF,            //协议结束符
+    SICHUAN_PROT_CONVERT_00 = 0x00,     //协议转译公共字符
+    SICHUAN_PROT_CONVERT_FE	= 0xFE,     //协议起始符转译字符1
+    SICHUAN_PROT_CONVERT_01	= 0x01,     //协议起始符转译字符2
+};
+
+//一&二级指令
+enum DevFunctionType1Type2
+{
+    CMD_TYPE1TYPE2_A202 = 0xA202,
+    CMD_TYPE1TYPE2_A206 = 0xA206,
+    CMD_TYPE1TYPE2_A301 = 0xA301,
+    CMD_TYPE1TYPE2_A302 = 0xA302,
+    CMD_TYPE1TYPE2_A401 = 0xA401,
+    CMD_TYPE1TYPE2_A500 = 0xA500,
+    CMD_TYPE1TYPE2_A504 = 0xA504,
+    CMD_TYPE1TYPE2_A506 = 0xA506,
+    CMD_TYPE1TYPE2_A507 = 0xA507,
+    CMD_TYPE1TYPE2_A611 = 0xA611,
+    CMD_TYPE1TYPE2_A632 = 0xA632,
+    CMD_TYPE1TYPE2_AA01 = 0xAA01,
+    CMD_TYPE1TYPE2_AA02 = 0xAA02,
+    CMD_TYPE1TYPE2_AE01 = 0xAE01,
+    CMD_TYPE1TYPE2_AE02 = 0xAE02,
+    CMD_TYPE1TYPE2_AE03 = 0xAE03,
+    CMD_TYPE1TYPE2_AE04 = 0xAE04,
+    CMD_TYPE1TYPE2_AE05 = 0xAE05,
+    CMD_TYPE1TYPE2_AE06 = 0xAE06,
+    CMD_TYPE1TYPE2_AE07 = 0xAE07,
+    CMD_TYPE1TYPE2_AF01 = 0xAF01,
+    CMD_TYPE1TYPE2_BE04 = 0xBE04,
+    CMD_TYPE1TYPE2_BE02 = 0xBE02,
+};
+
+//一级指令
+enum DevFunctionType1
+{
+    CMD_TYPE1_00 = 0x00,
+    CMD_TYPE1_50 = 0x50,
+    CMD_TYPE1_70 = 0x70,        //下位机请求及响应
+    CMD_TYPE1_80 = 0X80,        //上位机请求及响调
+    CMD_TYPE1_A5 = 0xA5,
+    CMD_TYPE1_A8 = 0xA8,
+};
+
+
+//四川
+class SiChuanDevCmdType
+{
+public:
+    uint8 CMD_TYPE_HeartBeat = 0x00;     //心跳包
+
+    uint8 CMD_TYPE_CardReader_C1 = 0xC1;
+    uint8 CMD_TYPE_CardReader_C2 = 0xC2;
+    uint8 CMD_TYPE_CardReader_C3 = 0xC3;
+    uint8 CMD_TYPE_CardReader_C4 = 0xC4;
+    uint8 CMD_TYPE_CardReader_C5 = 0xC5;
+    uint8 CMD_TYPE_CardReader_C6 = 0xC6;
+    uint8 CMD_TYPE_CardReader_C7 = 0xC7;
+    uint8 CMD_TYPE_CardReader_C8 = 0xC8;
+    uint8 CMD_TYPE_CardReader_C9 = 0xC9;
+    uint8 CMD_TYPE_CardReader_CA = 0xCA;
+    uint8 CMD_TYPE_CardReader_CB = 0xCB;
+    uint8 CMD_TYPE_CardReader_CC = 0xCC;
+    uint8 CMD_TYPE_CardReader_CD = 0xCD;
+    uint8 CMD_TYPE_CardReader_CE = 0xCE;
+    uint8 CMD_TYPE_CardReader_CF = 0xCF;
+
+    uint8 CMD_TYPE_CardMachine_B1 = 0xB1;   //控制指令执行结果
+    uint8 CMD_TYPE_CardMachine_B2 = 0xB2;  //入口卡机状态
+    uint8 CMD_TYPE_CardMachine_B3 = 0xB3;   //入口卡机事件
+    uint8 CMD_TYPE_CardMachine_B4 = 0xB4; //出口卡机状态
+    uint8 CMD_TYPE_CardMachine_B5 = 0xB5;  //出口卡机事件
+    uint8 CMD_TYPE_CardMachine_B6 = 0xB6;  //出票状态
+    uint8 CMD_TYPE_CardMachine_B7 = 0xB7;      //扫码状态
+    uint8 CMD_TYPE_CardMachine_B8 = 0xB8;         //语音求助对讲
+
+    //客户端请求回复指令
+    uint8 CMD_TYPE_CardMachine_C1 = 0xC1;          //时间同步
+    uint8 CMD_TYPE_CardMachine_C2 = 0xC2;  //设置黄闪报警
+    uint8 CMD_TYPE_CardMachine_C3 = 0xC3; //入口卡机控制
+    uint8 CMD_TYPE_CardMachine_C4 = 0xC4;//出口卡机控制
+    uint8 CMD_TYPE_CardMachine_C5 = 0xC5;        //出票控制
+
+    uint8 CMD_TYPE_Debug1 = 0xA1;
+    uint8 CMD_TYPE_Debug2 = 0xA2;
+};
+
+//二级指令
+enum DevFunctionType2
+{
+    //0x70指令(机器人发起)
+    CMD_GoWork_Req = 0x01,              //上班
+    CMD_GoWork_Resp = 0x02,             //上班应答
+    CMD_WorkOff_Req = 0x03,             //下班
+    CMD_WorkOff_Resp = 0x04,            //下班应答
+    CMD_LaneInfo_Req = 0X05,            //参数下载
+    CMD_LaneInfo_Resp = 0x06,           //参数下载应答
+    CMD_Lane_Init = 0x07,               //车道初始化
+    CMD_Lane_Init_Resp = 0x08,          //车道初始化应答
+    CMD_Holidays_Req = 0x09,            //节假日控制请求
+    CMD_Holidays_Resp = 0x0A,           //节假日控制请求应答
+    CMD_TeamMode_Req = 0x0B,            //车队模式请求
+    CMD_TeamMode_Resp = 0x0C,           //车队模式请求应答
+    CMD_QueueList_Req = 0x1C,           //队列列表查询
+    CMD_QueueList_Resp = 0x1D,          //队列列表查询应答
+    CMD_QueueAdd_Req = 0x1E,            //队列添加请求
+    CMD_QueueAdd_Resp = 0x1F,           //队列添加请求应答
+    CMD_QueueDelete_Req = 0x20,         //队列删除请求
+    CMD_QueueDelete_Resp = 0x21,        //队列删除请求应答
+    CMD_DecryptData_Req = 0x22,         //数据解密请求
+    CMD_DecryptData_Resp = 0x23,        //数据解密请求应答
+    //0x80指令(中间件发起)
+    CMD_HeartBeat_Req = 0x65,           //心跳包
+    CMD_HeartBeat_Resp = 0x66,          //心跳包应答
+    CMD_PrepareCard_Req = 0x67,         //备卡请求
+    CMD_PrepareCard_Resp = 0x68,        //备卡请求应答
+    CMD_ReadCard = 0x69,                //读卡状态(0:回收CPC卡)
+    CMD_ReadCard_Resp = 0x6A,           //读卡状态应答
+    CMD_WriteCard_Req = 0x6B,           //写卡完成
+    CMD_TakeCard_Resp = 0x6C,           //卡片取出应答
+    CMD_GetBackCode_Req=0x6D,           //获取回控数据
+    CMD_GetBackCode_Resp=0x6E,          //获取回控数据应答
+    CMD_CheckMsgCtrl_Req = 0X73,        //确认信息回控请求
+    CMD_CheckMsgCtrl_Resp = 0X74,       //确认信息回控请求应答
+    CMD_SelectMsgCtrl_Req = 0x75,       //选项信息回控请求
+    CMD_SelectMsgCtrl_Resp = 0X76,      //选项信息回控请求应答
+    CMD_TextBroadCast = 0x77,           //文字播音请求
+    CMD_TextBroadCastResp = 0x78,       //文字播音请求应答
+    CMD_TradeInfo_Req = 0x79,           //显示交易信息请求
+    CMD_TradeInfo_Resp = 0x7A,          //显示交易信息请求应答
+    CMD_SpecialEventStart_Req = 0x7B,   //特情开始请求
+    CMD_SpecialEventStart_Resp = 0x7C,  //特情开始请求应答
+    CMD_SpecialEventEnd_Req = 0x7D,     //特情结束请求
+    CMD_SpecialEventEnd_Resp = 0x7E,    //特情结束请求应答
+    CMD_GetQRCode_Req = 0X7F,           //获取二维码请求
+    CMD_GetQRCode_Resp = 0X80,          //获取二维码请求应答
+    CMD_TradeResult_Req = 0x81,         //交易结果请求
+    CMD_TradeResult_Resp = 0x82         //交易结果应答
+};
+
+//注册类KEY
+enum ClassMapKeyValue
+{
+    KEY_COMMON_FRAME=1,
+    KEY_BUSINESS=2,
+    KEY_BUSINESS_ITC_NO_PARK=3,
+    KEY_AUTO_UPDATE_MANAGER=4,     //自动更新
+    KEY_UPDATE_QUERY=5,
+    KEY_UPDATE_DOWNLOAD=6,
+    KEY_UPDATE_CONFIRM=7,
+    KEY_UPDATE_HTTP_MANAGER=8,
+    KEY_LITONG_BUSINESS=9,
+    KEY_YUNLAN=10,
+    KEY_YUNLAN_GETSIGN=11,
+    KEY_YUNLAN_QUERY=12,
+    KEY_CARD_READ_WRITE=13,
+    KEY_VEHICLEQUEUE_BUSINESS=14,  //Special start
+    KEY_SHOWFEEINFO_BUSINESS=15,   //Special start
+    KEY_PAYRESULTSHOW_BUSINESS=16, //Special startPayResultShow
+    KEY_DEALSTOP_BUSINESS=17,      //Special startPayResultShow
+    KEY_LEDDISPLAY_BUSINESS=18,
+    KEY_CHECKVEHINFO_BUSINESS=19,  //CheckVehInfo
+    KEY_CHECKENTRYINFO_BUSINESS=20,
+    KEY_CMD_CARDOPERATIONNOTIFY=21,
+    KEY_CMD_QUEUEMODIFY=22,
+    KEY_CMD_FRAME_DISPLAY=23,
+    KEY_CMD_AUTHORIZE=24,
+    KEY_CMD_FEEVOICE=25,
+    KEY_CMD_CAN0SLAVEUPGRADE=26,
+    KEY_CMD_BUSSINESS_AUTHORIZE=27,
+    KEY_LOG_UPLOAD_MANAGE=28,
+    KEY_COMMON_MESSAGE=29,
+    KEY_COMMON_ZEGO_BUSINESS=30,
+    KEY_COMMON_INNER_BUSINESS=31,
+    KEY_MECHANIC=32,
+    KEY_MECHANIC_BUSINESS=33,
+    KEY_MECHANIC_INIT=34,
+    KEY_QUEUENOTICE=35,
+    KEY_REQUESTENTRY=36,
+    KEY_TRADECONFIRM=37,
+    KEY_REQUESTEXIT=38,
+    KEY_NOENTRANCE=39,
+    KEY_ETCCARD_BUSSINESSS=40,
+    KEY_CARDTICKETMECHANIC=41,
+    KEY_UPCARDTICKET=42,
+    KEY_DOWNCARDTICKET=43,
+    KEY_CTRLTRIGGER=44,
+    KEY_GETCAPTURE=45,
+    KEY_WEIGHTIN=46,
+    KEY_HOLIDAY=47,
+    KEY_WEBSOCKET=48,
+    KEY_CLOUD_START=49,
+    KEY_CLOUD_END=50,
+    KEY_CLOUD_PLATE=51,
+    KEY_CLOUD_PLATE_CONFIRM=52,
+    KEY_CLOUD_WEIGHT=53,
+    KEY_CLOUD_WEIGHT_CONFIRM=54,
+    KEY_CLOUD_QUEUE=55,
+    KEY_CLOUD_QUEUE_CONFIRM=56,
+    KEY_CLOUD_AUTHORIZE=57,
+    KEY_CLOUD_AUTHORIZE_CONFIRM=58,
+    KEY_CLOUD_UNPAID=59,
+    KEY_CLOUD_UNPAID_CONFIRM=60,
+    KEY_CLOUD_CALL_HELP=61,
+    KEY_CLOUD_UP_CMD=62,
+    KEY_CLOUD_UP_CMD_CONFIRM=63,
+    KEY_CLOUD_TACK_CARD=64,
+    KEY_EXIT_CPC_VEHINFO_CHECK=65,
+    KEY_EXIT_CPC_BLACKLIST_CHECK=66,
+    KEY_EXIT_CPC_GREEN_VEH_CHECK=67,
+    KEY_EXIT_CPC_CONTAINER_VEH_CHECK=68,
+    KEY_EXIT_CPC_LARGE_VEH_CHECK=69,
+    KEY_EXIT_QUERY_ENTRY=70,
+    KEY_EXIT_VEHICLE_QUEUE=71,
+    KEY_EXIT_ETC_VALID_CHECK=72,
+    KEY_EXIT_QUEUE_QUERY=73,
+    KEY_EXIT_QUEUE_ADD=74,
+    KEY_EXIT_QUEUE_DELETE=75,
+    KEY_STRETCHMODULE=76,
+    KEY_UPREADCARDANTENNA=77,
+    KEY_COMMONSPECIAL=78,
+    KEY_ETCWRITECARDERROR=79,
+    KEY_ISSUANCECARD=80,
+    KEY_CPCBUSINESS=81,
+    KEY_PsamAuth=82,
+    KEY_OPENANTENNA=83,
+    KEY_QUEUEDELNOTICE=84,
+    KEY_T_ISSUANCECARD=85,
+    //业务类
+    KEY_REMOTE_CONTROL_PLAY_CONFIRM=101,
+    KEY_SPECIALSTART_BUSINESS=102,
+    KEY_REMOTE_CONTROL_HEART_BEAT=103,
+    KEY_ITC_NO_PARK_MANAGER_INIT=104,
+    KEY_ITC_NO_PARK_MANAGER_ENTRY_TRADE=105,
+    KEY_ITC_NO_PARK_MANAGER_EXIT_PRE_TRADE=106,
+    KEY_ITC_NO_PARK_MANAGER_EXIT_TRADE=107,
+    KEY_ITC_NO_PARK_MANAGER_ENTRY_REGISTER_QUERY=108,
+    KEY_ITC_NO_PARK_MANAGER_SYSTEM_TIME_QUERY=109,
+    KEY_ITC_NO_PARK_MANAGER_DATA_TRANS_QUERY=110,
+    KEY_ITC_NO_PARK_MANAGER_ROUTE_QUERY=111,
+
+    KEY_IC_CARD_MANAGER_DEBIT=112,
+    KEY_IC_CARD_MANAGER_DEBIT_CANEL=113,
+    KEY_IC_CARD_MANAGER_DEBIT_SUCCESS=114,
+    KEY_IC_CARD_MANAGER_TAC_UPLOAD=115,
+    KEY_IC_CARD_MANAGER_NETWORK_TIMEOUT=116,
+    KEY_IC_CARD_QUERY=117,
+    KEY_IC_CARD_YCTPAY=118,
+
+    KEY_EXIT_START=201,
+    KEY_EXIT_END=202,
+    KEY_EXIT_PLATE=203,
+    KEY_EXIT_PLATE_CONFIRM=204,
+    KEY_EXIT_ENTRY_INFO=205,
+    KEY_EXIT_ENTRY_INFO_CONFIRM=206,
+    KEY_EXIT_QUEUE=207,
+    KEY_EXIT_QUEUE_CONFIRM=208,
+    KEY_EXIT_AUTHORIZE=209,
+    KEY_EXIT_AUTHORIZE_CONFIRM=210,
+    KEY_EXIT_UNPAID=211,
+    KEY_EXIT_UNPAID_CONFIRM=212,
+    KEY_EXIT_CALL_HELP=213,
+    KEY_EXIT_UP_CMD=214,
+    KEY_EXIT_UP_CMD_CONFIRM=215,
+    KEY_EXIT_BUSINESS_MANAGER=216,
+};
+
+//函数功能KEY
+enum ClassFunKeyValue
+{
+    //写串口
+    SUBKEY_MW_PRAMER_DOWNLOAD=301,
+    SUBKEY_MW_INIT_LAND=302,
+    SUBKEY_MW_GOWORKEQUEST=303,
+    SUBKEY_MW_QUEUENOTICE=304,
+    SUBKEY_MW_REQUESTENTRY=305,
+    SUBKEY_MW_TRADECONFIRM=306,
+    SUBKEY_MW_REQUESTEXIT=307,
+    SUBKEY_MW_NOENTRANCE=308,
+    SUBKEY_MW_VOICESCANER=309,
+    SUBKEY_MW_VOICEBROADCAST=310,
+    SUBKEY_MW_CLOSE_SCANER=311,
+    SUBKEY_MW_GETCAPTURE=312,
+    SUBKEY_MW_WEIGHTIN=313,
+    SUBKEY_MW_HOLIDAY=314,
+    SUBKEY_MW_EXIT_QUERY_ENTRY=315,
+    SUBKEY_MW_EXIT_VEHICLE_QUEUE=316,
+    SUBKEY_MW_EXIT_ETC_VALID_CHECK=317,
+    SUBKEY_MW_EXIT_QUEUE_QUERY=318,
+    SUBKEY_MW_EXIT_QUEUE_ADD=319,
+    SUBKEY_MW_EXIT_QUEUE_DELETE=320,
+    SUBKEY_MW_PSAMAAUTH=321,
+    SUBKEY_MW_OPENANTENNA=322,
+    SUBKEY_MW_QUEUEDELNOTICE=323,
+    SUBKEY_MW_SPECIALNOTICE=324,
+    SUBKEY_MW_WORKOFFEQUEST=325,
+    SUBKEY_MW_PREPARE_CARD_OK=326,      //备卡完成
+    SUBKEY_MW_TAKE_THE_CARD_OK=327,     //卡被取走
+    SUBKEY_MW_EarthingInductor=328,     //压地感线圈
+    SUBKEY_MW_ReadCPCCardStatus=329,    //读卡状态应答(卡回收)
+    SUBKEY_MW_LiftingRodResp=330,       //抬杆回应
+    SUBKEY_MW_LoweringRodResp=331,      //降杆回应
+    //读串口
+    SUBKEY_MR_GOWORKEQUEST=401,
+    SUBKEY_MR_REQUESTENTRY=402,
+    SUBKEY_MR_REQUESTEXIT=403,
+    SUBKEY_MR_TRADECONFIRM=404,
+    SUBKEY_MR_ECTVALID=405,
+    SUBKEY_MR_NOENTRY=406,
+    SUBKEY_MR_WORKOFFEQUEST=407,
+    SUBKEY_MR_QUEUENOTICE=408,
+    SUBKEY_MR_PRAMER_DOWNLOAD=409,
+    SUBKEY_MR_INIT_LAND=410,
+    SUBKEY_MR_WEIGHING=411,
+    SUBKEY_MR_HOLIDAY=412,
+    SUBKEY_MR_PSAMAUTL=413,
+    SUBKEY_MR_ERROR_RESP=414,
+    SUBKEY_MR_CTRLTRIGGER=415,
+    SUBKEY_MR_PREPARE_CARD=416,         //备卡
+    SUBKEY_MR_CTRLCAPTURE=417,
+    SUBKEY_MR_VEHQUEUE=418,
+    SUBKEY_MR_QUEUEQUERY=419,
+    SUBKEY_MR_QUEUEADD=420,
+    SUBKEY_MR_QUEUEDEL=421,
+    SUBKEY_MR_OPENANNA=422,
+    SUBKEY_MR_QUEUEDELNOTICE=423,
+    SUBKEY_MR_WRITE_CARD_OK=424,        //写卡完成
+    SUBKEY_MR_ReadCardStatus=425,       //读卡状态
+    SUBKEY_MR_LiftingRod=426,           //抬杆请求
+    SUBKEY_MR_LoweringRod=427,          //降杆请求
+
+    //硬件操作
+    SUBKEY_HA_YUNLAN_URL=501,
+    SUBKEY_HA_SPECIALSTART_BUSINESS=502,//Special start
+    SUBKEY_HA_CHECKQUEUE_BUSINESS=503,
+    SUBKEY_HA_VEHINFOINQUIRE_BUSINESS=504,//Inquire车辆查询
+    SUBKEY_HA_INQUIREENTRYINFO_BUSINESS=505,
+    SUBKEY_HA_SHOWFEEINQUIREINFO_BUSINESS=506,
+    SUBKEY_HA_PAYMENTFAILE_BUSINESS=507,//paymentfaile
+    SUBKEY_HA_EarthingInductor=508,
+    //其他
+    SUBKEY_CMD_SCANER_RESULT=601,
+    SUBKEY_CMD_ISSUANCECARD=602,
+    SUBKEY_CMD_QUEUENOTICE=603,
+    SUBKEY_CMD_REQUESTENTRY=604,
+    SUBKEY_CMD_TRADECONFIRM=605,
+    SUBKEY_CMD_REMOTE_CONTROL_HARDWARE_COMMICATE=606,
+    SUBKEY_CMD_REMOTE_CONTROL_HEART_BEAT=607,
+    SUBKEY_CMD_INITSPECIAL_A5=608,
+    SUBKEY_CMD_CHACKLISTFAILE=609,
+    SUBKEY_CMD_PAYMENTRESTUL=610,
+    SUBKEY_CMD_QUERYQUEUEMODIFY=611,
+    SUBKEY_CMD_SCANER_REULET=612,
+    SUBKEY_CMD_QUERY_AUTHORIZE=613,
+    SUBKEY_CMD_CARDOPERATION=614,
+    SUBKEY_CMD_INTERCOM=615,
+    SUBKEY_CMD_CARDOPERATITYF=616,
+    SUBKEY_CMD_START_BUSSINESS_TIME=617,
+    SUBKEY_CMD_SIGNALQUALITY=618,
+    SUBKEY_CMD_FRAME_VOICE=619,
+    SUBKEY_CMD_READPARAMER=620,
+    SUBKEY_CMD_CONGJIBOTTON=621,
+    SUBKEY_CMD_SPECIALSTART_CAN0=622,
+    SUBKEY_CMD_CAN0BUTTION=623,
+    SUBKEY_CMD_QUERYSTOPSPECIAL=624,
+    SUBKEY_CMD_SPECIAL_HEARTBEAT=625,
+    SUBKEY_CMD_QUERY_BUSSINESS_AUTHORIZE=626,
+    SUBKEY_CMD_CCID_BUSINESS=627,
+    SUBKEY_CMD_QUALITY_BUSINESS=628,
+    SUBKEY_CMD_CAN_MAIN_BUTTION=629,
+    SUBKEY_CMD_CARDTICKETMECHANIC=630,
+
+    SUBKEY_ITC_NO_PARK_MANAGER_ENTRY_TRADE=701,
+    SUBKEY_ITC_NO_PARK_MANAGER_EXIT_PRE_TRADE=702,
+    SUBKEY_ITC_NO_PARK_MANAGER_EXIT_TRADE=703,
+    SUBKEY_ITC_NO_PARK_MANAGER_ENTRY_REGISTER_QUERY=704,
+    SUBKEY_ITC_NO_PARK_MANAGER_SYSTEM_TIME_QUERY=705,
+    SUBKEY_ITC_NO_PARK_MANAGER_DATA_TRANS_QUERY=706,
+    SUBKEY_ITC_NO_PARK_MANAGER_ROUTE_QUERY=7070,
+    SUBKEY_IC_CARD_MANAGER_DEBIT=708,
+    SUBKEY_IC_CARD_MANAGER_DEBIT_FAILED=709,
+    SUBKEY_IC_CARD_MANAGER_TAC_UPLOAD=710,
+    SUBKEY_IC_CARD_QUERY=711,
+
+    SUBKEY_EXIT_START=751,
+    SUBKEY_EXIT_END=752,
+    SUBKEY_EXIT_PLATE=753,
+    SUBKEY_EXIT_PLATE_CONFIRM=754,
+    SUBKEY_EXIT_ENTRY_INFO=755,
+    SUBKEY_EXIT_ENTRY_INFO_CONFIRM=756,
+    SUBKEY_EXIT_QUEUE=757,
+    SUBKEY_EXIT_QUEUE_CONFIRM=758,
+    SUBKEY_EXIT_AUTHORIZE=759,
+    SUBKEY_EXIT_AUTHORIZE_CONFIRM=760,
+    SUBKEY_EXIT_UNPAID=761,
+    SUBKEY_EXIT_UNPAID_CONFIRM=762,
+    SUBKEY_EXIT_CALL_HELP=763,
+    SUBKEY_EXIT_UP_CMD=764,
+    SUBKEY_EXIT_UP_CMD_CONFIRM=765,
+    SUBKEY_EXIT_HELP_BUTTON=766,
+    SUBKEY_EXIT_DISPLAY_HOMEPAGE=767,
+    SUBKEY_EXIT_DISPLAY_VIDEO_CONFIGURE=768,
+    SUBKEY_EXIT_DISPLAY_VIDEO_CHAT=769,
+    SUBKEY_EXIT_DISPLAY_VIDEO_FINISH=770,
+    SUBKEY_EXIT_DISPLAY_NET_PAY_SUCCESS=771,
+
+    SUBKEY_CPC_READCARDERROR=801,
+    SUBKEY_CPC_START_READ_CARD=802,
+    SUBKEY_CHONG_FANG_XING=803,
+    SUBKEY_TWOCUSTOMERSDANGER=804,//CheckVehInfo
+    SUBKEY_WEIGHTINFORMATION=805,
+    SUBKEY_TRUCKOVERLOAD=806,
+
+    //1000-2000 //无人值守专用KEY
+};
+
+#endif // COMMANDDEF_H
