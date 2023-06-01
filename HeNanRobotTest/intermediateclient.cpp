@@ -121,7 +121,8 @@ void IntermediateClient::SlotSendData(QString data)
         showSendData += s[i]+" ";
         bool ok;
         hexnum[i] = s[i].toInt(&ok,16); // 表示以16进制方式读取字符串
-        bytes[i] = hexnum[i];
+        // bytes[i] = hexnum[i]; 该写法已被弃用，并将在未来的qt版本中更改。
+        bytes.append(hexnum[i]);
         //qDebug()<<s[i]<<" "<<hexnum[i];
     }
     ui->textEdit->append("[发送] " + showSendData);

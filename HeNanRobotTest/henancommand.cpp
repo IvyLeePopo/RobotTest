@@ -480,7 +480,7 @@ QString HeNanCommand::TradeInfoCmdToHex(QString strNum)
     if(strNum.toInt() == 1)
     {
         qDebug() << __LINE__ << __FUNCTION__ << "缴费信息";
-        jsonObj1.insert("entryStation", "鲁山");
+        jsonObj1.insert("entryStation", "鲁山河南平顶山西站");
         jsonObj1.insert("payAmount", "23.6");
     }
     else if(strNum.toInt() == 2)
@@ -488,6 +488,7 @@ QString HeNanCommand::TradeInfoCmdToHex(QString strNum)
         qDebug() << __LINE__ << __FUNCTION__ << "车辆信息";
         jsonObj1.insert("vehAxles", "4");
         jsonObj1.insert("vehWeight", "14000");
+        jsonObj1.insert("displayMode", "");
     }
     else if(strNum.toInt() == 3)
     {
